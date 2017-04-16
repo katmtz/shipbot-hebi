@@ -1,0 +1,7 @@
+/home/pi/projects/arm/armcontrol/CMakeFiles/edit_cache.dir
+/home/pi/projects/arm/armcontrol/CMakeFiles/armcontrol.dir
+/home/pi/projects/arm/armcontrol/CMakeFiles/rebuild_cache.dir
+/home/pi/projects/arm/armcontrol/CMakeFiles/arm.dir
+/home/pi/projects/arm/armcontrol/CMakeFiles/hebi_cpp_files.dir
+/home/pi/projects/arm/armcontrol/hebi/CMakeFiles/rebuild_cache.dir
+/home/pi/projects/arm/armcontrol/hebi/CMakeFiles/edit_cache.dir
