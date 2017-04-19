@@ -52,7 +52,7 @@ int main()
   int num_modules = group->size();
   hebi::GroupCommand command(num_modules);
 
-  float vel = 0.5*M_PI;
+  float vel = 0.3*M_PI;
   //set every motor to position 0
   for (int i = 0; i < num_modules; i++){
 	command[i].actuator().position().set(0);
@@ -66,8 +66,9 @@ int main()
   float pos[3] = {0,0,0};
   float prev_pos[3] = {0,0,0};
   float fdbk_pos[3] = {0,0,0};
-  while(terminate == 0){
+  while(terminate != 1){
 	
+	/*
 	hebi::GroupFeedback feedback(num_modules);
 	long timeout_ms = 1000;
 	group->requestFeedback(&feedback, timeout_ms);
@@ -77,7 +78,7 @@ int main()
 		//std::cout << "feedback: " << i << "  " << prev_pos[i] << std::endl;
 	}
 	hebi_sleep_ms(100);
-	
+	*/
 	
 	int sender = 0;
 	std::ifstream file("../../devices/arm.txt");
@@ -86,22 +87,28 @@ int main()
 	char buf[50];
 	file >> buf;
 	file >> sender;
-	if (sender == 1){
+	if (sender == 1 && commandline == false){
 		file >> terminate;
 		if (terminate == 1){
 			std::cout<<"arm terminated"<<std::endl;	
 			break;
 		}
-		file >> buf >> pos[0];
-		file >> buf >> pos[1];
-		file >> buf >> pos[2];
-		//std::cout << terminate << pos[0] << pos[1] << pos[2] << std::endl;
-		std::ofstream file("../../devices/arm.txt");
-		file << "@ 0" << std::endl;
-		file << terminate <<  std::endl;
-		file << "s " << pos[0] << std::endl;
-		file << "e " << pos[1] << std::endl;
-		file << "h " << pos[2] << std::endl;
+		if (terminate == 0){
+			file >> buf >> pos[0];
+			file >> buf >> pos[1];
+			file >> buf >> pos[2];
+			//std::cout << terminate << pos[0] << pos[1] << pos[2] << std::endl;
+			std::ofstream file("../../devices/arm.txt");
+			file << "@ 0" << std::endl;
+			file << terminate <<  std::endl;
+			file << "s " << pos[0] << std::endl;
+			file << "e " << pos[1] << std::endl;
+			file << "h " << pos[2] << std::endl;
+		}
+		else{
+			commandline =true;
+		}
+
 	}
 	
 	if (commandline == true){
@@ -118,17 +125,16 @@ int main()
 	}
 	
 	if (sender == 1 || commandline == true) {
-		for (int i = 0; i<num_modules; i++){
-			/*
-			if (pos[i]>prev_pos[i]){
-				command[i].actuator().velocity().set(vel);
-			}
-			else{
-				command[i].actuator().velocity().set(-1*vel);
-				//std::cout<< "negative velocity" << std::endl;
-			}
-			*/
+					
+		if (pos[2]>prev_pos[2]){
+			command[2].actuator().velocity().set(vel);
+		}
+		else{
+			command[2].actuator().velocity().set(-1*vel);
+			//std::cout<< "negative velocity" << std::endl;
+		}
 			
+		for (int i = 0; i<num_modules; i++){
 			command[i].actuator().position().set(pos[i]/180*M_PI);
 		}
 
