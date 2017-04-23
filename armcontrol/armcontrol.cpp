@@ -52,7 +52,7 @@ int main()
   int num_modules = group->size();
   hebi::GroupCommand command(num_modules);
 
-  float vel = 0.3*M_PI;
+  float vel = 0.02*M_PI;
   //set every motor to position 0
   for (int i = 0; i < num_modules; i++){
 	command[i].actuator().position().set(0);
@@ -81,7 +81,7 @@ int main()
 	*/
 	
 	int sender = 0;
-	std::ifstream file("../../devices/arm.txt");
+	std::ifstream file("../../shipbot/dist/devices/HEBI.txt");
 	std::string str;
 	std::string symb;
 	char buf[50];
@@ -98,7 +98,7 @@ int main()
 			file >> buf >> pos[1];
 			file >> buf >> pos[2];
 			//std::cout << terminate << pos[0] << pos[1] << pos[2] << std::endl;
-			std::ofstream file("../../devices/arm.txt");
+			std::ofstream file("../../shipbot/dist/devices/HEBI.txt");
 			file << "@ 0" << std::endl;
 			file << terminate <<  std::endl;
 			file << "s " << pos[0] << std::endl;
