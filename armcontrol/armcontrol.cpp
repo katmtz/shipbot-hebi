@@ -81,7 +81,7 @@ int main()
 	*/
 	
 	int sender = 0;
-	std::ifstream file("../../shipbot/dist/devices/HEBI.txt");
+	std::ifstream file("../../shipbot/dist/devices/actuators/HEBI.txt");
 	std::string str;
 	std::string symb;
 	char buf[50];
@@ -98,15 +98,12 @@ int main()
 			file >> buf >> pos[1];
 			file >> buf >> pos[2];
 			//std::cout << terminate << pos[0] << pos[1] << pos[2] << std::endl;
-			std::ofstream file("../../shipbot/dist/devices/HEBI.txt");
+			std::ofstream file("../../shipbot/dist/devices/actuators/HEBI.txt");
 			file << "@ 0" << std::endl;
 			file << terminate <<  std::endl;
 			file << "s " << pos[0] << std::endl;
 			file << "e " << pos[1] << std::endl;
 			file << "h " << pos[2] << std::endl;
-		}
-		else{
-			commandline =true;
 		}
 
 	}
