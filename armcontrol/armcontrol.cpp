@@ -53,11 +53,13 @@ int main()
   hebi::GroupCommand command(num_modules);
 
   float vel = 0.02*M_PI;
+  
   //set every motor to position 0
   for (int i = 0; i < num_modules; i++){
 	command[i].actuator().position().set(0);
 	//command[i].actuator().velocity().set(vel);
   }
+
   group->sendCommand(command);
   std::cout << "Initializd"<<std::endl;
   hebi_sleep_ms(100);
@@ -65,7 +67,7 @@ int main()
   int terminate = 0;
   float pos[3] = {0,0,0};
   float prev_pos[3] = {0,0,0};
-  float fdbk_pos[3] = {0,0,0};
+  //float fdbk_pos[3] = {0,0,0};
   while(terminate != 1){
 	
 	/*
@@ -83,29 +85,26 @@ int main()
 	int sender = 0;
 	std::ifstream file("../../shipbot/dist/devices/actuators/HEBI.txt");
 	std::string str;
-	std::string symb;
+	//std::string symb;
 	char buf[50];
 	file >> buf;
 	file >> sender;
 	if (sender == 1 && commandline == false){
-		file >> terminate;
-		if (terminate == 1){
-			std::cout<<"arm terminated"<<std::endl;	
+		file >> str;
+		if (str == "STOP"){
+			terminate = 1;
 			break;
 		}
-		if (terminate == 0){
-			file >> buf >> pos[0];
+		else if (str == "s"){
+			file >> pos[0];
 			file >> buf >> pos[1];
 			file >> buf >> pos[2];
-			//std::cout << terminate << pos[0] << pos[1] << pos[2] << std::endl;
-			std::ofstream file("../../shipbot/dist/devices/actuators/HEBI.txt");
-			file << "@ 0" << std::endl;
-			file << terminate <<  std::endl;
-			file << "s " << pos[0] << std::endl;
-			file << "e " << pos[1] << std::endl;
-			file << "h " << pos[2] << std::endl;
+			
+			std::cout << "Received command fom text: " << pos[0] << "  " << pos[1] << "  " << pos[2] << std::endl;
 		}
-
+		else{
+			std::cout << "Invalid command from text\n";
+		}
 	}
 	
 	if (commandline == true){
@@ -122,7 +121,7 @@ int main()
 	}
 	
 	if (sender == 1 || commandline == true) {
-					
+	
 		if (pos[2]>prev_pos[2]){
 			command[2].actuator().velocity().set(vel);
 		}
@@ -130,20 +129,30 @@ int main()
 			command[2].actuator().velocity().set(-1*vel);
 			//std::cout<< "negative velocity" << std::endl;
 		}
+		
 			
 		for (int i = 0; i<num_modules; i++){
 			command[i].actuator().position().set(pos[i]/180*M_PI);
 		}
-
+		std::cout<<"Command sent to arm: "<< pos[0] << " " << pos[1] << " " << pos[2] << std::endl;
 		group->sendCommand(command);
+		
+		//writing back to file
+		std::ofstream file("../../shipbot/dist/devices/actuators/HEBI.txt");
+		file << "@ 0" << std::endl;
+		file << "s " << pos[0] << std::endl;
+		file << "e " << pos[1] << std::endl;
+		file << "h " << pos[2] << std::endl;
+		
 	}
-	
+
 	for (int i = 0; i < num_modules; i++){
 		prev_pos[i] = pos[i];
 	}
 	
   }
 
+  std::cout<<"arm terminated"<<std::endl;	
   return 0;
 }
 
