@@ -55,11 +55,16 @@ int main()
   float vel = 0.02*M_PI;
   
   //set every motor to position 0
+/*
   for (int i = 0; i < num_modules; i++){
 	command[i].actuator().position().set(0);
 	//command[i].actuator().velocity().set(vel);
   }
-
+ */
+  command[0].actuator().position().set(-0.5*M_PI);
+  command[1].actuator().position().set(0);
+  command[2].actuator().position().set(-13/180*M_PI);
+	
   group->sendCommand(command);
   std::cout << "Initializd"<<std::endl;
   hebi_sleep_ms(100);
